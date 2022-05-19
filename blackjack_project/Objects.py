@@ -9,6 +9,7 @@ class Player:
         Self.Money = 100
         Self.Wins = 0
         Self.Losses = 0
+        Self.Hand = None
 
     def PlayerWin(Self, Spoils: int):
         print("Player {Self.Name} wins " + str(Spoils) + ".")
@@ -40,7 +41,21 @@ class Deck:
                 for k in ('Diamond','Heart','Spade','Club'):
                     Deck.append(Card(j,k))
         return Deck
+
+    def DrawCard(Self):
+        """
+        TBC
+        """
+        DrawnCard = Self.pop(0)
+        Self.pop(0)
+        return Self, DrawnCard
                     
+    def PrintCardsInDeck(Self):
+        """
+        TBC
+        """
+        print("Deck has " + str(len(Self)) + " cards left.")
+
 
 class Card:
     """
@@ -51,6 +66,7 @@ class Card:
         Self.Picture = Card.AssignPicture(Self,CardNumber)
         Self.Suit = CardSuit
         Self.SuitRank = Card.AssignRank(Self,CardSuit)
+        Self.Value = Card.CardValue(Self,CardNumber)
 
     def AssignPicture(Self,CardNumber: int):
         PictureOptions = {1: 'Ace', 11 : 'Jack', 12 : 'Queen', 13 : 'King'}
@@ -68,9 +84,44 @@ class Card:
         elif Self.Number in (1,11,12,13):
             print(f"{Self.Picture} of {Self.Suit}s")
 
+    def CardValue(Self,CardNumber: int):
+        if CardNumber > 10:
+            CardValue = 10
+        else:
+            CardValue = CardNumber
+        return CardValue
+
+
 
 class Hand():
-    pass
+    def __init__(Self, Card1: object, Card2: object):
+        Self.Hand = Hand.DealHand(Self,Card1, Card2)
+
+    def DealHand(Self, Card1: object, Card2: object):
+        Self.Hand = [Card1,Card2]
+        return Self.Hand
+
+    def HandTwist(Self, Card: object):
+        Self.append(Card)
+        return Self
+
+    def HandValue(Self):
+        TotalValues = [0]
+        for Card in Self:
+            if Card.Value != 1:
+                TotalValues = [x+Card.Value for x in TotalValues]
+            else:
+                TotalValues[(len(TotalValues)-1)] += 1
+                TotalValues.append(TotalValues[(len(TotalValues)-1)] + 11)
+        return TotalValues
+
+    def PrintHandValue(Self):
+        TotalValues = Hand.HandValue(Self)
+        if all(Value > 21 for Value in TotalValues):
+            print("BUST!")
+        else:
+            print("Value: " + (''.join(str(TotalValues))))
+
 
 
 if __name__ == "__main__":

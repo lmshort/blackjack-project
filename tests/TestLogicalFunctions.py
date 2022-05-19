@@ -37,14 +37,6 @@ class Test:
 
 
 
-
-    def setup_method(Self):
-        Self.orig_stdin = sys.stdin
-
-    def teardown_method(Self):
-        sys.stdin = Self.orig_stdin
-
-
 """
 if __name__ == "__main__":
     Test()

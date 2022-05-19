@@ -63,6 +63,23 @@ class Logical:
     def ShiftPlayerOrder(List: list):
         return List[-1:] + List[:-1] 
 
+    def GetStickOrTwistInput():
+        result = None
+        while result == None:
+            value = input(f"Stick (enter 's') or Twist (enter 't') ?:")
+            try:
+                if len(value) > 0 and value.lower() in ('s', 'stick'):
+                    result = "stick"
+                    return result
+                elif len(value) > 0 and value.lower() in ('t', 'twist'):
+                    result = "twist"
+                    return result
+                else: raise
+            except:
+                print("Error - Please ensure correct text syntax used.")
+                return None
+
+
 
 
 if __name__ == "__main__":

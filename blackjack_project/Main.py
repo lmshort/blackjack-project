@@ -78,38 +78,72 @@ class BlackJackGame:
         """
         os.system("clear")
         print("Game Starting..")
-
         # Creating the deck
         Deck = Functions.Logical.Randomise((Objects.Deck(NumberOfDecks).Deck))
-        #for Card in Deck:
-        #    Objects.Card.Describe(Card)
-
-        exit
         
-        # initialise dealer's hand
+        # initialise dealer
+        Dealer = Objects.Player(0,"Dealer")
+        round = 0
 
-        #while True:
-        
-        for Player in Players:
-            if Player.Name != "Dealer":
-                print("\n" + str(Player.Name) + "'s Turn - Money~$" + str(Player.Money) + "\n")
+        while True:
+            os.system("clear")
+            round += 1
+            print("HAND " + str(round))
+            Scores = {}
+            for Player in Players:
+                Deck, Card1 = Objects.Deck.DrawCard(Deck)
+                Deck, Card2 = Objects.Deck.DrawCard(Deck)
+                Player.Hand = Objects.Hand(Card1,Card2)
+                print(f"\nPlayer: {Player.Name} Hand:\n")
 
-                # receive cards
+                for Card in Player.Hand.Hand:
+                    Objects.Card.Describe(Card)
+                Objects.Hand.PrintHandValue(Player.Hand.Hand)
 
-        
-        # dealer's turn
-        print("\n" + str(Player.Name) + "Dealer's Turn.\n")
+                while True:
+                    Option = Functions.Logical.GetStickOrTwistInput()
+
+                    if Option == 'twist':
+                        Deck, Card = Objects.Deck.DrawCard(Deck)
+                        Objects.Card.Describe(Card)
+                    else:
+                        Scores[Player.Name] = Objects.Hand.HandValue(Player.Hand.Hand)
+                        break    
+
+                    Player.Hand.Hand = Objects.Hand.HandTwist(Player.Hand.Hand,Card)
+
+                    Objects.Hand.PrintHandValue(Player.Hand.Hand)
+                    if all(x > 21 for x in Objects.Hand.HandValue(Player.Hand.Hand)):
+                        Scores[Player.Name] = -1
+                        break
+
+                Objects.Deck.PrintCardsInDeck(Deck)
+
+            # dealer's turn
+            print("\n Dealer's Turn.\n")
+            # Dealer's hand:
+            Deck, Card1 = Objects.Deck.DrawCard(Deck)
+            Deck, Card2 = Objects.Deck.DrawCard(Deck)
+            Dealer.Hand = Objects.Hand(Card1,Card2)
+            #for Card in Dealer.Hand.Hand:
+            #    Objects.Card.Describe(Card)
+            #    pass
+
+            # add dealer's score
+            # add dealer's logic
+
+            break
+
         # at end of round:
 
-        PlayerOrder = Functions.Logical.ShiftPlayerOrder(PlayerOrder)
+        Players = Functions.Logical.ShiftPlayerOrder(Players)
 
 
-    def Hand(self):
-        """
-        Docstring TBC
-        """
-        pass
 
+
+
+
+# need to build something in to have a maximum number of users
 
     def __init__(self):
         """_summary_
