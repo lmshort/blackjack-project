@@ -69,12 +69,8 @@ class Card:
             print(f"{Self.Picture} of {Self.Suit}s")
 
 
-
 class Hand():
     pass
-
-
-
 
 
 if __name__ == "__main__":
