@@ -2,6 +2,7 @@
 TBC
 """
 import random
+import time
 
 class Numeric:
     """
@@ -12,6 +13,17 @@ class Numeric:
         TBC
         """
         return value.isdigit()
+    
+    def CountInNewHand():
+        """
+        TBC
+        """
+        t = 5
+        print("\nStarting new hand...")
+        while t >= 1:
+            time.sleep(1)
+            print(t)
+            t -= 1
 
 
 
@@ -24,9 +36,10 @@ class Logical:
         """
         TBC
         """
-        value = input("\n" + str(Prompt) + " [1-999..]:")
+        value = input("\n" + str(Prompt) + " [1-5]:")
         if Numeric.IsPositiveInteger(value):
-            return int(value)
+            if int(value) <= 5:
+                return int(value)
         else:
             return False
 
@@ -35,12 +48,6 @@ class Logical:
         TBC
         """
         return str(input("\n" + str(Prompt) + ":\n"))
-
-    def NamePlayer(PlayerID: int, PlayerName: str):
-        """
-        TBC
-        """
-        print("Setting player " + str(PlayerID) + " name to " + str(PlayerName))
 
     def IsStringLongerThanEqualTo(String: str, Length: int) -> bool:
         """
@@ -68,16 +75,15 @@ class Logical:
         while result == None:
             value = input(f"Stick (enter 's') or Twist (enter 't') ?:")
             try:
-                if len(value) > 0 and value.lower() in ('s', 'stick'):
+                if len(value) == 1 and value.lower() in ('s'):
                     result = "stick"
                     return result
-                elif len(value) > 0 and value.lower() in ('t', 'twist'):
+                elif len(value) != 0 and value.lower() in ('t'):
                     result = "twist"
                     return result
                 else: raise
             except:
                 print("Error - Please ensure correct text syntax used.")
-                return None
 
 
 

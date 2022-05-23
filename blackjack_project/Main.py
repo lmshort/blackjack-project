@@ -4,6 +4,7 @@ Main.py - Blackjack game main run file.
 import os
 import Functions
 import Objects
+import time
 
 class BlackJackGame:
     """
@@ -53,7 +54,6 @@ class BlackJackGame:
         Players = []
         for i in range(0,NumberOfPlayers):
             PlayerName = BlackJackGame.GetPlayerName(self,i+1)
-            Functions.Logical.NamePlayer(i+1,PlayerName)
             Player = Objects.Player(i+1,PlayerName)
             Players.append(Player)
         BlackJackGame.SelectDeck(self, Players)
@@ -70,7 +70,7 @@ class BlackJackGame:
 
 
     """
-    Game operation interface
+    Game operation interface functions
     """
     def StartGame(self, Players: list, NumberOfDecks: int):
         """
@@ -78,72 +78,161 @@ class BlackJackGame:
         """
         os.system("clear")
         print("Game Starting..")
+
         # Creating the deck
         Deck = Functions.Logical.Randomise((Objects.Deck(NumberOfDecks).Deck))
         
-        # initialise dealer
-        Dealer = Objects.Player(0,"Dealer")
-        round = 0
+        RoundNum = 0
+        # Creating dictionary for scores to be contained
+        Scores = {}
 
         while True:
+            Deck, RoundNum, Players, Scores = BlackJackGame.PlayersTurn(self, Deck, RoundNum, Players, Scores)
+            time.sleep(0.4)
+            Deck, Scores = BlackJackGame.DealersTurn(self, Deck, Scores)
+            time.sleep(0.4)
+            Objects.Deck.PrintCardsInDeck(Deck)
+            time.sleep(0.4)
+            Players = BlackJackGame.AssessResults(self, Players, Scores)
+            time.sleep(1.5)
             os.system("clear")
-            round += 1
-            print("HAND " + str(round))
-            Scores = {}
-            for Player in Players:
-                Deck, Card1 = Objects.Deck.DrawCard(Deck)
-                Deck, Card2 = Objects.Deck.DrawCard(Deck)
-                Player.Hand = Objects.Hand(Card1,Card2)
-                print(f"\nPlayer: {Player.Name} Hand:\n")
+            BlackJackGame.OverallStandings(self, Players, RoundNum)
+            time.sleep(0.4)
+            if (Functions.Numeric.CountInNewHand) <= 25:
+                print("Re-shuffling Deck...")
+                time.sleep(0.4)
+                Deck = Functions.Logical.Randomise((Objects.Deck(NumberOfDecks).Deck))
+            # at end of Round:
+            Players = Functions.Logical.ShiftPlayerOrder(Players)
 
-                for Card in Player.Hand.Hand:
-                    Objects.Card.Describe(Card)
-                Objects.Hand.PrintHandValue(Player.Hand.Hand)
 
-                while True:
-                    Option = Functions.Logical.GetStickOrTwistInput()
+# functions to be cleaned and adjusted:
+    def PlayersTurn(self, Deck: object, RoundNum: int, Players: list, Scores: dict):
+        """_summary_
 
-                    if Option == 'twist':
-                        Deck, Card = Objects.Deck.DrawCard(Deck)
-                        Objects.Card.Describe(Card)
-                    else:
-                        Scores[Player.Name] = Objects.Hand.HandValue(Player.Hand.Hand)
-                        break    
+        Args:
+            Deck (object): _description_
+            RoundNum (int): _description_
+            Players (list): _description_
+            Scores (dict): _description_
 
-                    Player.Hand.Hand = Objects.Hand.HandTwist(Player.Hand.Hand,Card)
-
-                    Objects.Hand.PrintHandValue(Player.Hand.Hand)
-                    if all(x > 21 for x in Objects.Hand.HandValue(Player.Hand.Hand)):
-                        Scores[Player.Name] = -1
-                        break
-
-                Objects.Deck.PrintCardsInDeck(Deck)
-
-            # dealer's turn
-            print("\n Dealer's Turn.\n")
-            # Dealer's hand:
+        Returns:
+            _type_: _description_
+        """
+        os.system("clear")
+        RoundNum += 1
+        print("HAND " + str(RoundNum))
+        for Player in Players:
             Deck, Card1 = Objects.Deck.DrawCard(Deck)
             Deck, Card2 = Objects.Deck.DrawCard(Deck)
-            Dealer.Hand = Objects.Hand(Card1,Card2)
-            #for Card in Dealer.Hand.Hand:
-            #    Objects.Card.Describe(Card)
-            #    pass
+            Player.Hand = Objects.Hand(Card1,Card2)
+            print(f"\nPlayer: {Player.Name}'s Hand:\n")
 
-            # add dealer's score
-            # add dealer's logic
+            for Card in Player.Hand.Hand:
+                Objects.Card.Describe(Card)
+            Objects.Hand.PrintHandValue(Player.Hand.Hand)
 
-            break
+            # migrate this all over to a separate function
+            while True:
+                Option = Functions.Logical.GetStickOrTwistInput()
+                time.sleep(0.4)
+                if Option == 'twist':
+                    Deck, Card = Objects.Deck.DrawCard(Deck)
+                    Objects.Card.Describe(Card)
+                else:
+                    Scores[Player.Name] = Objects.Hand.HandValue(Player.Hand.Hand)
+                    break    
 
-        # at end of round:
+                Player.Hand.Hand = Objects.Hand.HandTwist(Player.Hand.Hand,Card)
 
-        Players = Functions.Logical.ShiftPlayerOrder(Players)
+                Objects.Hand.PrintHandValue(Player.Hand.Hand)
+                if all(x > 21 for x in Objects.Hand.HandValue(Player.Hand.Hand)):
+                    Scores[Player.Name] = [-1]
+                    break    
+        return Deck, RoundNum, Players, Scores
+
+    def DealersTurn(self, Deck: object, Scores: dict):
+        """
+        TBC
+        """
+        print("\n Dealer's Turn.\n")
+        Dealer = Objects.Player(0,"Dealer")
+        # Dealer's hand:
+        Deck, Card1 = Objects.Deck.DrawCard(Deck)
+        Deck, Card2 = Objects.Deck.DrawCard(Deck)
+        Dealer.Hand = Objects.Hand(Card1,Card2)
+        print(f"\nDealer's Hand:\n")
+        for Card in Dealer.Hand.Hand:
+            Objects.Card.Describe(Card)
+
+        time.sleep(0.4)
+
+        while True:
+            DealerHandValueMax = max(Objects.Hand.HandValue(Dealer.Hand.Hand))
+            DealerHandValueMin = min(Objects.Hand.HandValue(Dealer.Hand.Hand))
+            if DealerHandValueMax <= 21 and DealerHandValueMax > 16:
+                Scores["Dealer"] = Objects.Hand.HandValue(Dealer.Hand.Hand)
+                break
+            elif DealerHandValueMin <= 21 and DealerHandValueMin > 16:
+                Scores["Dealer"] = Objects.Hand.HandValue(Dealer.Hand.Hand)
+                break
+            Deck, Card = Objects.Deck.DrawCard(Deck)
+            Objects.Card.Describe(Card)
+            time.sleep(0.4)
+            Dealer.Hand.Hand = Objects.Hand.HandTwist(Dealer.Hand.Hand,Card)
+            Objects.Hand.PrintHandValue(Dealer.Hand.Hand)
+            if all(x > 21 for x in Objects.Hand.HandValue(Dealer.Hand.Hand)):
+                Scores["Dealer"] = [-1]
+                break   
+        return Deck, Scores  
 
 
+    def AssessResults(self, Players: list, Scores: dict):
+        """_summary_
 
+        Args:
+            Players (list): _description_
+            Scores (dict): _description_
 
+        Returns:
+            _type_: _description_
+        """
+        PlayerReference = {}
+        for index, Player in enumerate(Players):
+            PlayerReference[Player.Name] = index
 
+        keys = list(Scores.keys())
+        for key in keys:
+            if key != "Dealer":
+                if max(Scores[key]) > max(Scores["Dealer"]):
+                    print("Player: " + key + " wins!")
+                    Players[PlayerReference[key]].Wins += 1
+                elif max(Scores[key]) == max(Scores["Dealer"]):
+                    print("Player: " + key + " ties.")
+                    Players[PlayerReference[key]].Ties += 1
+                else:
+                    print("Player: " + key + " loses.")
+                    Players[PlayerReference[key]].Losses += 1
+        return Players
 
-# need to build something in to have a maximum number of users
+    def OverallStandings(self, Players: list, RoundNum: int):
+        """_summary_
+
+        Args:
+            Players (_type_): _description_
+        """
+        print("\nOVERALL STANDINGS")
+        for Player in Players:
+            print(f"\nPlayer: {Player.Name}")
+            print("Total Wins: " + str(Player.Wins))
+            print("\nTotal Ties: " + str(Player.Ties))
+            print("\nTotal Losses: " + str(Player.Losses))
+    
+
+# need to add a re-build deck when deck size < 30
+# need to build something in to have a maximum number of users (5 max)
+# need to build something in to have a maximum number of decks (10 max!!)
+
 
     def __init__(self):
         """_summary_

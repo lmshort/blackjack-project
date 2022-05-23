@@ -6,23 +6,23 @@ class Player:
     def __init__ (Self, PlayerID: int, PlayerName: str):
         Self.ID = PlayerID
         Self.Name = PlayerName
-        Self.Money = 100
+        #Self.Money = 100
         Self.Wins = 0
         Self.Losses = 0
+        Self.Ties = 0
         Self.Hand = None
 
     def PlayerWin(Self, Spoils: int):
-        print("Player {Self.Name} wins " + str(Spoils) + ".")
+        print("Player {Self.Name} wins.")
         Self.Wins += 1
-        Self.Money += Spoils
+        #Self.Money += Spoils
 
+    """
     def PlayerLoss(Self):
         print("Player {Self.Name} loses.")
         Self.Losses += 1
         Self.Money += -5
-
-    def Describe(Self):
-        print(Self)
+    """
 
 
 class Deck:
@@ -113,14 +113,16 @@ class Hand():
             else:
                 TotalValues[(len(TotalValues)-1)] += 1
                 TotalValues.append(TotalValues[(len(TotalValues)-1)] + 11)
+        TotalValues = [x for x in TotalValues if x < 22]
         return TotalValues
 
     def PrintHandValue(Self):
         TotalValues = Hand.HandValue(Self)
         if all(Value > 21 for Value in TotalValues):
             print("BUST!")
-        else:
+        else: 
             print("Value: " + (''.join(str(TotalValues))))
+
 
 
 
