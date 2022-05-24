@@ -1,6 +1,3 @@
-"""
-TBC
-"""
 import random
 import time
 
@@ -24,7 +21,6 @@ class Numeric:
             time.sleep(1)
             print(t)
             t -= 1
-
 
 
 class Logical:
@@ -84,7 +80,16 @@ class Logical:
                 else: raise
             except:
                 print("Error - Please ensure correct text syntax used.")
+                
+    def GetPlayerName(self, PlayerID: int) -> str:
+        """_Summary_
 
+        """
+        while True:
+            PlayerName = Logical.GetUserInputString("Enter player " + str(PlayerID) + " name")
+            if Logical.ValidateName(PlayerName):
+                return str(PlayerName)
+            print("Error - Incorrect name format (remember: must be > 1 character)")
 
 
 

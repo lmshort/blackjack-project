@@ -50,11 +50,11 @@ class Deck:
         Self.pop(0)
         return Self, DrawnCard
                     
-    def PrintCardsInDeck(Self):
+    def CountCardsInDeck(Self):
         """
         TBC
         """
-        print("Deck has " + str(len(Self)) + " cards left.")
+        return len(Self)
 
 
 class Card:
@@ -111,8 +111,10 @@ class Hand():
             if Card.Value != 1:
                 TotalValues = [x+Card.Value for x in TotalValues]
             else:
-                TotalValues[(len(TotalValues)-1)] += 1
-                TotalValues.append(TotalValues[(len(TotalValues)-1)] + 11)
+                TotalValuesPrevious = TotalValues
+                TotalValues = [x+1 for x in TotalValues]
+                for value in TotalValuesPrevious:
+                    TotalValues.append(value + 11)
         TotalValues = [x for x in TotalValues if x < 22]
         return TotalValues
 
@@ -122,8 +124,6 @@ class Hand():
             print("BUST!")
         else: 
             print("Value: " + (''.join(str(TotalValues))))
-
-
 
 
 if __name__ == "__main__":
