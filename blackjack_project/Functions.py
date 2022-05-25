@@ -60,7 +60,7 @@ class Logical:
         else:
             return False
 
-    def Randomise(Deck: object):
+    def Randomise(Deck: list):
         return random.sample(Deck,len(Deck))
 
     def ShiftPlayerOrder(List: list):
@@ -81,7 +81,7 @@ class Logical:
             except:
                 print("Error - Please ensure correct text syntax used.")
                 
-    def GetPlayerName(self, PlayerID: int) -> str:
+    def GetPlayerName(PlayerID: int) -> str:
         """_Summary_
 
         """

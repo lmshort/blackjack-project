@@ -11,7 +11,7 @@ To DO:
 - add hints input
 - add hints returns
 - add docstring details
-- add tests for all
+- add tests for all (just missing Main
 - check pylint
 
 """
@@ -89,7 +89,7 @@ class BlackJackGame:
         """
         Players = []
         for i in range(0,NumberOfPlayers):
-            PlayerName = Functions.Logical.GetPlayerName(self,i+1)
+            PlayerName = Functions.Logical.GetPlayerName(i+1)
             Player = Objects.Player(i+1,PlayerName)
             Players.append(Player)
         return Players

@@ -1,15 +1,19 @@
 from blackjack_project import __version__
 from blackjack_project import Functions
-import pytest
 import mock
 import builtins
+import pytest
 
 class Test:
-    def test_Version(Self):
+    def test_IsPositiveInteger(Self):
         """
-        Dummmy placeholder test
+        test the Functions.Numeric.IsPositiveInteger member
         """
-        assert __version__ == '0.1.0'
+        with pytest.raises(Exception):
+            assert Functions.Numeric.IsPositiveInteger("-1")
+
+        with pytest.raises(Exception):
+            assert Functions.Numeric.IsPositiveInteger("2.5")
             
     def test_GetUserInputPostitiveInteger(Self):
         """
@@ -41,11 +45,42 @@ class Test:
 
     def test_ValidateName(Self):
         """
-        test the Functions.Logical.ValidateName member
+        test the Functions.Logical.ValidateName member.
         """
         assert Functions.Logical.ValidateName("string") == True
 
+    def test_Randomise(Self):
+        """
+        test the Functions.Logical.Randomise member.
+        """
+        # Pseudo-randomness test
+        TestData = list(range(1, 100))
+        assert Functions.Logical.Randomise(TestData) != TestData
 
+    def test_ShiftPlayerOrder(Self):
+        """
+        test the Functions.Logical.ShiftPlayerOrder member.
+        """
+        # Pseudo-randomness test
+        TestData = [0,1,2,3]
+        assert Functions.Logical.ShiftPlayerOrder(TestData) == [3,0,1,2]
+
+    def test_GetStickOrTwistInput(Self):
+        """
+        test the Functions.Logical.GetStickOrTwistInput member.
+        """
+        with mock.patch.object(builtins, 'input', lambda _: 's'):
+            assert Functions.Logical.GetStickOrTwistInput() == 'stick'
+
+        with mock.patch.object(builtins, 'input', lambda _: 't'):
+            assert Functions.Logical.GetStickOrTwistInput() == 'twist'
+
+    def test_GetPlayerName(Self):
+        """
+        test the Functions.Logical.GetPlayerName member.
+        """
+        with mock.patch.object(builtins, 'input', lambda _: 'Name'):
+            assert Functions.Logical.GetPlayerName(1) == 'Name'
 
 
 """

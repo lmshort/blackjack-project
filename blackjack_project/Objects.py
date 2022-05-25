@@ -1,9 +1,17 @@
 
 class Player:
     """
-    Docstring TBC
+    Player class - created for each player added to the game, contains overall information and stats.
     """
     def __init__ (Self, PlayerID: int, PlayerName: str):
+        """_summary_
+        Player class initiated with overall information and stats.
+
+        Args:
+            Self (object): Player object
+            PlayerID (int): Simple integer used to account for differences when PlayerName is duplicately used.
+            PlayerName (str): Player name string
+        """
         Self.ID = PlayerID
         Self.Name = PlayerName
         #Self.Money = 100
@@ -12,22 +20,10 @@ class Player:
         Self.Ties = 0
         Self.Hand = None
 
-    def PlayerWin(Self, Spoils: int):
-        print("Player {Self.Name} wins.")
-        Self.Wins += 1
-        #Self.Money += Spoils
-
-    """
-    def PlayerLoss(Self):
-        print("Player {Self.Name} loses.")
-        Self.Losses += 1
-        Self.Money += -5
-    """
-
 
 class Deck:
     """
-    Docstring TBC
+    Deck class - a class container where list of Card objects are stored.
     """
     def __init__ (Self, NumberOfDecks: int):
         Self.NumberOfDecks = NumberOfDecks
