@@ -8,12 +8,9 @@ from blackjack_project import Objects
 from typing import Union
 """
 To DO:
-- add hints input
-- add hints returns
-- add docstring details
-- add tests for all (just missing Main
+- add tests for all (just missing Main - key game ones)
 - check pylint
-
+- reformat with black
 """
 
 class BlackJackGame:

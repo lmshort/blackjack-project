@@ -36,6 +36,7 @@ class Test:
     StartGame
     """
     # not sure how to test this piece - large function, dependent on many others
+    # potentially use fixtures to pre-define the state for each test.
 
     def test_PlayersTurn(self, capfd):
         """

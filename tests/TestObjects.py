@@ -93,7 +93,7 @@ class Test:
         assert len(Hand.Hand) == 3
 
         # Testing hand value calculation
-        assert Objects.Hand.HandValue(Hand.Hand) == [13]
+        assert Objects.Hand.HandValue(Hand.Hand) == [13,23]
 
         # testing hand value print
         Objects.Hand.PrintHandValue(Hand.Hand)
