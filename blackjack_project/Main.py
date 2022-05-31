@@ -2,9 +2,9 @@
 Main.py - Blackjack game main run file.
 """
 import os
-import Functions
-import Objects
 import time
+from blackjack_project import Functions
+from blackjack_project import Objects
 
 """
 To DO:
