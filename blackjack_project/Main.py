@@ -5,7 +5,7 @@ import os
 import time
 from blackjack_project import Functions
 from blackjack_project import Objects
-
+from typing import Union
 """
 To DO:
 - add hints input
@@ -33,14 +33,14 @@ class BlackJackGame:
         lawrence.short@BJSS.com
         Version: """ + str(Version) + "\n")
 
-    def GameTime():
+    def GameTime() -> int:
         """_Summary_
         Constant value game time, used throughout.
 
         Returns:
             float: No. seconds
         """
-        return 1
+        return 2
 
     """
     Game welcome interface functions:
@@ -77,7 +77,7 @@ class BlackJackGame:
         print(str(NumberOfDecks) + " selected! (" + str(int(NumberOfDecks)*52) + " cards)")
         return NumberOfDecks
         
-    def NamePlayers(self, NumberOfPlayers: int):
+    def NamePlayers(self, NumberOfPlayers: int) -> list:
         """_summary_
         Obtain and record individual player names.
 
@@ -117,7 +117,7 @@ class BlackJackGame:
 
         while True:
             # Executes interface for players' turns.
-            Deck, RoundNum, Players, Scores = BlackJackGame.PlayersTurn(self, Deck, RoundNum, Players, Scores)
+            Deck, RoundNum, Scores = BlackJackGame.PlayersTurn(self, Deck, RoundNum, Players, Scores)
             time.sleep(0.75 * BlackJackGame.GameTime())
             # Executes Dealer's turn
             Deck, Scores = BlackJackGame.DealersTurn(self, Deck, Scores)
@@ -129,7 +129,7 @@ class BlackJackGame:
             time.sleep(1.5 * BlackJackGame.GameTime())
             os.system("clear")
             # Presentation of overall results
-            BlackJackGame.OverallStandings(self, Players, RoundNum)
+            BlackJackGame.OverallStandings(self, Players)
             time.sleep(1.5 * BlackJackGame.GameTime())
             # Hard reshuffle when less than 25 cards.
             if (Objects.Deck.CountCardsInDeck(Deck)) <= 25:
@@ -141,9 +141,7 @@ class BlackJackGame:
             # Next hand countdown
             Functions.Numeric.CountInNewHand
 
-
-# functions to be cleaned and adjusted:
-    def PlayersTurn(self, Deck: object, RoundNum: int, Players: list, Scores: dict):
+    def PlayersTurn(self, Deck: object, RoundNum: int, Players: list, Scores: dict) -> Union[object, int, dict]:
         """_summary_
         Executes all players' turns.
 
@@ -163,35 +161,73 @@ class BlackJackGame:
         RoundNum += 1
         print("HAND " + str(RoundNum))
         for Player in Players:
-            Deck, Card1 = Objects.Deck.DrawCard(Deck)
-            Deck, Card2 = Objects.Deck.DrawCard(Deck)
-            Player.Hand = Objects.Hand(Card1,Card2)
+            Deck, Player = BlackJackGame.BuildHand(self, Deck, Player)
             print(f"\nPlayer: {Player.Name}'s Hand:\n")
 
             for Card in Player.Hand.Hand:
                 Objects.Card.Describe(Card)
             Objects.Hand.PrintHandValue(Player.Hand.Hand)
 
-            # migrate this all over to a separate function
-            while True:
-                Option = Functions.Logical.GetStickOrTwistInput()
-                time.sleep(0.4 * BlackJackGame.GameTime())
-                if Option == 'twist':
-                    Deck, Card = Objects.Deck.DrawCard(Deck)
-                    Objects.Card.Describe(Card)
-                else:
-                    Scores[Player.Name] = Objects.Hand.HandValue(Player.Hand.Hand)
-                    break    
+            # Execution of function to interface user stick/twist options
+            Deck, Scores = BlackJackGame.UserOptions(self, Deck, Player, Scores)
 
-                Player.Hand.Hand = Objects.Hand.HandTwist(Player.Hand.Hand,Card)
+        return Deck, RoundNum, Scores
 
-                Objects.Hand.PrintHandValue(Player.Hand.Hand)
-                if all(x > 21 for x in Objects.Hand.HandValue(Player.Hand.Hand)):
-                    Scores[Player.Name] = [-1]
-                    break    
-        return Deck, RoundNum, Players, Scores
+    def BuildHand(self, Deck: object, Player: object) -> Union[object,object]:
+        """_summary_
+        Constructs a player/dealer's hand by drawing 2 cards from the deck.
 
-    def DealersTurn(self, Deck: object, Scores: dict):
+        Args:
+            Deck (object): Deck of playing cards
+            Player (object): player or dealer 
+
+        Returns:
+            Deck (object): Deck of playing cards
+            Player (oject): Player object (containing hand attribute list of cards)
+        """
+        Deck, Card1 = Objects.Deck.DrawCard(Deck)
+        Deck, Card2 = Objects.Deck.DrawCard(Deck)
+        Player.Hand = Objects.Hand(Card1,Card2)
+        return Deck, Player
+
+    def UserOptions(self, Deck: object, Player: object, Scores: dict) -> Union[object, dict]:
+        """_summary_
+        Loops through iterations of user options to either stick or twist.
+
+        Args:
+            Deck (object): Deck of playing cards
+            Player (object): Single player object
+            Scores (dict): Game scores dictionary
+
+        Returns:
+            Deck (object): Deck of playing cards
+            Scores (dict): Game scores dictionary 
+        """
+        # migrate this all over to a separate function
+        while True:
+            # get user option
+            Option = Functions.Logical.GetStickOrTwistInput()
+            time.sleep(0.4 * BlackJackGame.GameTime())
+            if Option == 'twist':
+                # draw card
+                Deck, Card = Objects.Deck.DrawCard(Deck)
+                Objects.Card.Describe(Card)
+            else:
+                # stick option sets score and exists function
+                Scores[Player.Name] = Objects.Hand.HandValue(Player.Hand.Hand)
+                break    
+
+            # append card to player's hand
+            Player.Hand.Hand = Objects.Hand.HandTwist(Player.Hand.Hand,Card)
+            Objects.Hand.PrintHandValue(Player.Hand.Hand)
+
+            # evaluate whether player's hand is "bust" and adjusting score if so.
+            if all(x > 21 for x in Objects.Hand.HandValue(Player.Hand.Hand)):
+                Scores[Player.Name] = [-1]
+                break    
+        return Deck, Scores
+
+    def DealersTurn(self, Deck: object, Scores: dict) -> Union[object, dict]:
         """_summary_
         Executes dealer's turn.
 
@@ -207,40 +243,59 @@ class BlackJackGame:
         Dealer = Objects.Player(0,"Dealer")
 
         # Dealer's hand:
-        Deck, Card1 = Objects.Deck.DrawCard(Deck)
-        Deck, Card2 = Objects.Deck.DrawCard(Deck)
-        Dealer.Hand = Objects.Hand(Card1,Card2)
+        Deck, Dealer = BlackJackGame.BuildHand(self, Deck, Dealer)
         print(f"\nDealer's Hand:\n")
         for Card in Dealer.Hand.Hand:
             Objects.Card.Describe(Card)
+        Objects.Hand.PrintHandValue(Dealer.Hand.Hand)
 
         time.sleep(0.4 * BlackJackGame.GameTime())
 
-        # Dealer card drawing
+        # Executes logic behind dealer's turn
+        Deck, Scores = BlackJackGame.DealerOptions(self, Dealer, Deck, Scores)
+        return Deck, Scores  
+
+    def DealerOptions(self, Dealer: object, Deck: object, Scores: dict) -> Union[object, dict]:
+        """_summary_
+        Undertakes dealer options (automated process).
+
+        Args:
+            Dealer (object): Dealer "player" object
+            Deck (object): Deck of playing cards
+            Scores (dict): Game scores dictionary
+
+        Returns:
+            Deck (object): Deck of playing cards
+            Scores (dict): Games scores dictionary
+        """
+        # runs until exit conditions are met
         while True:
             DealerHandValueMax = max(Objects.Hand.HandValue(Dealer.Hand.Hand))
             DealerHandValueMin = min(Objects.Hand.HandValue(Dealer.Hand.Hand))
+            # if the hand value is within 16-22, then register score and exist operation
             if DealerHandValueMax <= 21 and DealerHandValueMax > 16:
                 Scores["Dealer"] = Objects.Hand.HandValue(Dealer.Hand.Hand)
                 break
             elif DealerHandValueMin <= 21 and DealerHandValueMin > 16:
                 Scores["Dealer"] = Objects.Hand.HandValue(Dealer.Hand.Hand)
                 break
+
+            # if the above conditions are not met, dealer will always draw a card
             Deck, Card = Objects.Deck.DrawCard(Deck)
-
             Objects.Card.Describe(Card)
-
             time.sleep(0.4 * BlackJackGame.GameTime())
-            
+
+            # hand adjusted
             Dealer.Hand.Hand = Objects.Hand.HandTwist(Dealer.Hand.Hand,Card)
             Objects.Hand.PrintHandValue(Dealer.Hand.Hand)
 
+            # condition checks if dealer is "bust"
             if all(x > 21 for x in Objects.Hand.HandValue(Dealer.Hand.Hand)):
                 Scores["Dealer"] = [-1]
                 break   
         return Deck, Scores  
 
-    def AssessResults(self, Players: list, Scores: dict):
+    def AssessResults(self, Players: list, Scores: dict) -> list:
         """_summary_
         Assesses wins/ties/losses and allocates them to the corresponding player.
 
@@ -271,7 +326,7 @@ class BlackJackGame:
                     Players[PlayerReference[key]].Losses += 1
         return Players
 
-    def OverallStandings(self, Players: list, RoundNum: int):
+    def OverallStandings(self, Players: list):
         """_summary_
         Presentation of the overall player standings.
 

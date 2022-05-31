@@ -24,7 +24,7 @@ class Test:
 
     def test_NamePlayers(Self):
         """
-        Test the select players option returns the corresponding integer.
+        Test the select players option returns the desired values.
         """
         Inputs = ['testname1','testname2']
         with mock.patch.object(builtins, 'input', side_effect=Inputs):
@@ -35,18 +35,41 @@ class Test:
     """
     StartGame
     """
+    # not sure how to test this piece - large function, dependent on many others
 
-    """
-    PlayersTurn
-    """
+    def test_PlayersTurn(self, capfd):
+        """
+        Test the PlayersTurn function..
+        """
+        pass
 
-    """
-    DealersTurn
-    """
+    def test_BuildHand(self, capfd):
+        """
+        Test the BuildHand function..
+        """
+        pass
+
+    def test_UserOptions(self, capfd):
+        """
+        Test the UserOptions function..
+        """
+        pass
+
+    def test_DealersTurn(self, capfd):
+        """
+        Test the DealersTurn function..
+        """
+        pass
+
+    def test_DealerOptions(self, capfd):
+        """
+        Test the DealerOptions function..
+        """
+        pass
 
     def test_AssessResults(Self, capfd):
         """
-        Assessresults
+        Test the Assessresults returns the correct winners and losers.
         """
         class TestPlayer:
             def __init__(Self, Name):
@@ -59,17 +82,11 @@ class Test:
         Scores = {"testname1":[11,21],"testname2":[18],"Dealer":[19]}
         Scores = Main.BlackJackGame.AssessResults(Self, Players,Scores)
         out, err = capfd.readouterr()
-        print(len(out))
-        for i in out:
-            print(i)
-        #print(Scores)
-        pass
+        assert out == "Player: testname1 wins!\nPlayer: testname2 loses.\n"
 
-    def test_OverallStandings(Self):
-        """
-        OverallStandings
-        """
-        pass
+    """
+    Overall Standings - print function, unit testing unnecessary
+    """
 
 """
 if __name__ == "__main__":
