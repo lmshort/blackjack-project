@@ -67,7 +67,6 @@ class Deck:
             object: Card object, representing the drawn card/
         """
         DrawnCard = Self.pop(0)
-        Self.pop(0)
         return Self, DrawnCard
                     
     def CountCardsInDeck(Self) -> int:
@@ -165,16 +164,14 @@ class Hand():
     """
     Hand class represents a player's collection of cards.
     """
-    def __init__(Self, Card1: object, Card2: object):
+    def __init__(Self):
         """_summary_
         Initiator function defines the hand attribute "Hand" - a list of cards, based on initial 2 card draw.
 
         Args:
             Self (object): Hand object
-            Card1 (object): Drawn card 1
-            Card2 (object): Drawn card 2
         """
-        Self.Hand = Hand.DealHand(Self,Card1, Card2)
+        Self.Hand = None# Hand.DealHand(Self,Card1, Card2)
 
     def DealHand(Self, Card1: object, Card2: object) -> list:
         """_summary_

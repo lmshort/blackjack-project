@@ -1,7 +1,11 @@
 from blackjack_project import __version__
-from blackjack_project import Main
+from blackjack_project import Main, Objects
 import mock
 import builtins
+import pytest
+from typing import Union
+import os
+
 
 class Test:
     """
@@ -38,35 +42,41 @@ class Test:
     # not sure how to test this piece - large function, dependent on many others
     # potentially use fixtures to pre-define the state for each test.
 
-    def test_PlayersTurn(self, capfd):
-        """
-        Test the PlayersTurn function..
-        """
-        pass
+    @pytest.fixture
+    def SimulatedSetupDeck(Self) -> Union[object, int, list, dict]:
+        Deck = Objects.Deck(1)
+        RoundNum = 0
+        Players = [Objects.Player(0,'testplayer1'),Objects.Player(1,'testplayer2')]
+        Scores = {}
+        return Deck, RoundNum, Players, Scores
 
-    def test_BuildHand(self, capfd):
+    def test_PlayersTurn(Self, SimulatedSetupDeck):
         """
-        Test the BuildHand function..
+        Test the PlayersTurn and dependent UserOptions and BuildHand functions.
         """
-        pass
+        Deck, RoundNum, Players, Scores = SimulatedSetupDeck
+        Inputs = ['t','t','t','t','s','t','s']
 
-    def test_UserOptions(self, capfd):
-        """
-        Test the UserOptions function..
-        """
-        pass
+        # Mocks user inputs and also sets time.sleep to 0 to speed up test.
+        with mock.patch.object(builtins, 'input', side_effect=Inputs):
+            with mock.patch("time.sleep"):
+                Deck, RoundNum, Scores = Main.BlackJackGame.PlayersTurn(Self, Deck.Deck, RoundNum, Players, Scores,)
 
-    def test_DealersTurn(self, capfd):
-        """
-        Test the DealersTurn function..
-        """
-        pass
+        assert RoundNum == 1
+        assert Scores['testplayer1'] == [8, 18, 18, 28, 18, 28, 28, 38, 18, 28, 28, 38, 28, 38, 38, 48]
+        assert Scores['testplayer2'] == [7]
+        assert len(Deck) == 43
 
-    def test_DealerOptions(self, capfd):
+    def test_DealersTurn(Self, SimulatedSetupDeck):
         """
-        Test the DealerOptions function..
+        Test the DealersTurn function and dependent DealerOptions function.
         """
-        pass
+        Deck, _, _, Scores = SimulatedSetupDeck
+        with mock.patch("time.sleep"):
+            Deck, Scores = Main.BlackJackGame.DealersTurn(Self, Deck.Deck, Scores)
+
+        assert len(Deck) == 42
+        assert Scores['Dealer'][0] == 18
 
     def test_AssessResults(Self, capfd):
         """

@@ -84,19 +84,19 @@ class Test:
         # Testing hand draw
         Card1 = Objects.Card(2,"Spade")
         Card2 = Objects.Card(12,"Hearts")
-        Hand = Objects.Hand(Card1,Card2)
-        assert len(Hand.Hand) == 2
+        Hand = Objects.Hand.DealHand(Self,Card1,Card2)
+        assert len(Hand) == 2
 
         # Testing card draw (twist/hit)
         Card3 = Objects.Card(1,"Diamond")
-        Hand.Hand = Objects.Hand.HandTwist(Hand.Hand,Card3)
-        assert len(Hand.Hand) == 3
+        Hand = Objects.Hand.HandTwist(Hand,Card3)
+        assert len(Hand) == 3
 
         # Testing hand value calculation
-        assert Objects.Hand.HandValue(Hand.Hand) == [13,23]
+        assert Objects.Hand.HandValue(Hand) == [13,23]
 
         # testing hand value print
-        Objects.Hand.PrintHandValue(Hand.Hand)
+        Objects.Hand.PrintHandValue(Hand)
         out, err = capfd.readouterr()
         assert out == "Value: [13]\n"
 
