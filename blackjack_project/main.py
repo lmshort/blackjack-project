@@ -136,7 +136,9 @@ class BlackJackGame:
             deck, dcores = BlackJackGame.dealers_turn(self, deck, scores)
             time.sleep(0.75 * BlackJackGame.game_time())
             print(
-                "Deck has " + str(objects.Deck.count_cards_in_deck(deck)) + " cards left."
+                "Deck has "
+                + str(objects.Deck.count_cards_in_deck(deck))
+                + " cards left."
             )
             time.sleep(0.75 * BlackJackGame.game_time())
             # Evaulaute the winners/losers

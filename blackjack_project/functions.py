@@ -22,8 +22,7 @@ class Numeric:
         return value.isdigit()
 
     def count_in_new_hand():
-        """Executes a 5 second countdown - used to transition between interfaces.
-        """
+        """Executes a 5 second countdown - used to transition between interfaces."""
         time_value = 5
         print("\nStarting new hand...")
         while time_value >= 1:
