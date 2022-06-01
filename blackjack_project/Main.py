@@ -3,32 +3,37 @@ Main.py - Blackjack game main run file.
 """
 import os
 import time
+from typing import Union
 from blackjack_project import Functions
 from blackjack_project import Objects
-from typing import Union
+
 """
 To DO:
-- check pylint
 - reformat with black
 - considerations for error handling - where necessary
 """
+
 
 class BlackJackGame:
     """
     Main wrapper class containing game interface functionality.
     """
 
-    def Welcome(self, Version: str):
+    def Welcome(Version: str):
         """_Summary_
         Display welcome message upon game start.
-        
+
         Args:
             Version (str): Game version number.
         """
-        print("""\nWelcome to BlackJack!\n
+        print(
+            """\nWelcome to BlackJack!\n
         (C) 2022 - Lawrence Short
         lawrence.short@BJSS.com
-        Version: """ + str(Version) + "\n")
+        Version: """
+            + str(Version)
+            + "\n"
+        )
 
     def GameTime() -> int:
         """_Summary_
@@ -42,6 +47,7 @@ class BlackJackGame:
     """
     Game welcome interface functions:
     """
+
     def SelectPlayers(self) -> int:
         """_summary_
         Select, via user input the number of players required (maximum 5).
@@ -49,12 +55,16 @@ class BlackJackGame:
         Returns:
             NumberOfPlayers (int): Number of players required (maximum 5).
         """
-        NumberOfPlayers = Functions.Logical.GetUserInputPostitiveInteger("Enter number of human players")
-        if not NumberOfPlayers:
-            print("Error - Please select number of players (remember: positive integer values only)")
-            BlackJackGame.SelectPlayers(self)
-        else:
-            return NumberOfPlayers
+        while True:
+            NumberOfPlayers = Functions.Logical.GetUserInputPostitiveInteger(
+                "Enter number of human players"
+            )
+            if not NumberOfPlayers:
+                print(
+                    "Error - Please select number of players (remember: positive integer values only)"
+                )
+            else:
+                return NumberOfPlayers
 
     def SelectDeck(self, Players: list) -> int:
         """_summary_
@@ -66,15 +76,24 @@ class BlackJackGame:
         Returns:
             int: Number of game decks (maximum 5).
         """
-        NumberOfDecks = Functions.Logical.GetUserInputPostitiveInteger("Enter number of decks")
+        NumberOfDecks = Functions.Logical.GetUserInputPostitiveInteger(
+            "Enter number of decks"
+        )
         if not NumberOfDecks:
-            print("Error - Please select number of desks (remember: positive integer values only)")
+            print(
+                "Error - Please select number of desks (remember: positive integer values only)"
+            )
             BlackJackGame.SelectDeck(self, Players)
         # insert update of player object
-        print(str(NumberOfDecks) + " selected! (" + str(int(NumberOfDecks)*52) + " cards)")
+        print(
+            str(NumberOfDecks)
+            + " selected! ("
+            + str(int(NumberOfDecks) * 52)
+            + " cards)"
+        )
         return NumberOfDecks
-        
-    def NamePlayers(self, NumberOfPlayers: int) -> list:
+
+    def NamePlayers(NumberOfPlayers: int) -> list:
         """_summary_
         Obtain and record individual player names.
 
@@ -85,15 +104,16 @@ class BlackJackGame:
             Players (list): List of player objects required for the game (minus Dealer).
         """
         Players = []
-        for i in range(0,NumberOfPlayers):
-            PlayerName = Functions.Logical.GetPlayerName(i+1)
-            Player = Objects.Player(i+1,PlayerName)
+        for i in range(0, NumberOfPlayers):
+            PlayerName = Functions.Logical.GetPlayerName(i + 1)
+            Player = Objects.Player(i + 1, PlayerName)
             Players.append(Player)
         return Players
 
     """
     Game operation interface functions
     """
+
     def StartGame(self, Players: list, NumberOfDecks: int):
         """_summary_
         Main game interface wrapper. This function contains executes gameplay indefinitely.
@@ -107,26 +127,30 @@ class BlackJackGame:
 
         # Deck generation
         Deck = Functions.Logical.Randomise((Objects.Deck(NumberOfDecks).Deck))
-        
+
         # Round iterator and score dict initialised
         RoundNum = 0
         Scores = {}
 
         while True:
             # Executes interface for players' turns.
-            Deck, RoundNum, Scores = BlackJackGame.PlayersTurn(self, Deck, RoundNum, Players, Scores)
+            Deck, RoundNum, Scores = BlackJackGame.PlayersTurn(
+                self, Deck, RoundNum, Players, Scores
+            )
             time.sleep(0.75 * BlackJackGame.GameTime())
             # Executes Dealer's turn
             Deck, Scores = BlackJackGame.DealersTurn(self, Deck, Scores)
             time.sleep(0.75 * BlackJackGame.GameTime())
-            print("Deck has " + str(Objects.Deck.CountCardsInDeck(Deck)) + " cards left.")
+            print(
+                "Deck has " + str(Objects.Deck.CountCardsInDeck(Deck)) + " cards left."
+            )
             time.sleep(0.75 * BlackJackGame.GameTime())
             # Evaulaute the winners/losers
-            Players = BlackJackGame.AssessResults(self, Players, Scores)
+            Players = BlackJackGame.AssessResults(Players, Scores)
             time.sleep(1.5 * BlackJackGame.GameTime())
             os.system("clear")
             # Presentation of overall results
-            BlackJackGame.OverallStandings(self, Players)
+            BlackJackGame.OverallStandings(Players)
             time.sleep(1.5 * BlackJackGame.GameTime())
             # Hard reshuffle when less than 25 cards.
             if (Objects.Deck.CountCardsInDeck(Deck)) <= 25:
@@ -138,7 +162,9 @@ class BlackJackGame:
             # Next hand countdown
             Functions.Numeric.CountInNewHand
 
-    def PlayersTurn(self, Deck: object, RoundNum: int, Players: list, Scores: dict) -> Union[object, int, dict]:
+    def PlayersTurn(
+        self, Deck: object, RoundNum: int, Players: list, Scores: dict
+    ) -> Union[object, int, dict]:
         """_summary_
         Executes all players' turns.
 
@@ -158,7 +184,7 @@ class BlackJackGame:
         RoundNum += 1
         print("HAND " + str(RoundNum))
         for Player in Players:
-             
+
             print(f"\nPlayer: {Player.Name}'s Hand:\n")
             Deck, Player = BlackJackGame.BuildHand(self, Deck, Player)
             for Card in Player.Hand:
@@ -166,17 +192,17 @@ class BlackJackGame:
             Objects.Hand.PrintHandValue(Player.Hand)
 
             # Execution of function to interface user stick/twist options
-            Deck, Scores = BlackJackGame.UserOptions(self, Deck, Player, Scores)
+            Deck, Scores = BlackJackGame.UserOptions(Deck, Player, Scores)
 
         return Deck, RoundNum, Scores
 
-    def BuildHand(self, Deck: object, Player: object) -> Union[object,object]:
+    def BuildHand(self, Deck: object, Player: object) -> Union[object, object]:
         """_summary_
         Constructs a player/dealer's hand by drawing 2 cards from the deck.
 
         Args:
             Deck (object): Deck of playing cards
-            Player (object): player or dealer 
+            Player (object): player or dealer
 
         Returns:
             Deck (object): Deck of playing cards
@@ -184,10 +210,10 @@ class BlackJackGame:
         """
         Deck, Card1 = Objects.Deck.DrawCard(Deck)
         Deck, Card2 = Objects.Deck.DrawCard(Deck)
-        Player.Hand = Objects.Hand.DealHand(self,Card1,Card2)
+        Player.Hand = Objects.Hand.DealHand(self, Card1, Card2)
         return Deck, Player
 
-    def UserOptions(self, Deck: list, Player: object, Scores: dict) -> Union[object, dict]:
+    def UserOptions(Deck: list, Player: object, Scores: dict) -> Union[object, dict]:
         """_summary_
         Loops through iterations of user options to either stick or twist.
 
@@ -198,30 +224,30 @@ class BlackJackGame:
 
         Returns:
             Deck (object): Deck of playing cards
-            Scores (dict): Game scores dictionary 
+            Scores (dict): Game scores dictionary
         """
         # migrate this all over to a separate function
         while True:
             # get user option
             Option = Functions.Logical.GetStickOrTwistInput()
             time.sleep(0.4 * BlackJackGame.GameTime())
-            if Option == 'twist':
+            if Option == "twist":
                 # draw card
                 Deck, Card = Objects.Deck.DrawCard(Deck)
                 Objects.Card.Describe(Card)
             else:
                 # stick option sets score and exists function
                 Scores[Player.Name] = Objects.Hand.HandValue(Player.Hand)
-                break    
+                break
 
             # append card to player's hand
-            Player.Hand = Objects.Hand.HandTwist(Player.Hand,Card)
+            Player.Hand = Objects.Hand.HandTwist(Player.Hand, Card)
             Objects.Hand.PrintHandValue(Player.Hand)
 
             # evaluate whether player's hand is "bust" and adjusting score if so.
             if all(x > 21 for x in Objects.Hand.HandValue(Player.Hand)):
                 Scores[Player.Name] = [-1]
-                break    
+                break
         return Deck, Scores
 
     def DealersTurn(self, Deck: object, Scores: dict) -> Union[object, dict]:
@@ -237,7 +263,7 @@ class BlackJackGame:
             Scores (dict): Dictionary containing scores for the round.
         """
         print("\n Dealer's Turn.\n")
-        Dealer = Objects.Player(0,"Dealer")
+        Dealer = Objects.Player(0, "Dealer")
 
         # Dealer's hand:
         Deck, Dealer = BlackJackGame.BuildHand(self, Deck, Dealer)
@@ -250,9 +276,11 @@ class BlackJackGame:
 
         # Executes logic behind dealer's turn
         Deck, Scores = BlackJackGame.DealerOptions(self, Dealer, Deck, Scores)
-        return Deck, Scores  
+        return Deck, Scores
 
-    def DealerOptions(self, Dealer: object, Deck: object, Scores: dict) -> Union[object, dict]:
+    def DealerOptions(
+        self, Dealer: object, Deck: object, Scores: dict
+    ) -> Union[object, dict]:
         """_summary_
         Undertakes dealer options (automated process).
 
@@ -283,16 +311,16 @@ class BlackJackGame:
             time.sleep(0.4 * BlackJackGame.GameTime())
 
             # hand adjusted
-            Dealer.Hand = Objects.Hand.HandTwist(Dealer.Hand,Card)
+            Dealer.Hand = Objects.Hand.HandTwist(Dealer.Hand, Card)
             Objects.Hand.PrintHandValue(Dealer.Hand)
 
             # condition checks if dealer is "bust"
             if all(x > 21 for x in Objects.Hand.HandValue(Dealer.Hand)):
                 Scores["Dealer"] = [-1]
-                break   
-        return Deck, Scores  
+                break
+        return Deck, Scores
 
-    def AssessResults(self, Players: list, Scores: dict) -> list:
+    def AssessResults(Players: list, Scores: dict) -> list:
         """_summary_
         Assesses wins/ties/losses and allocates them to the corresponding player.
 
@@ -305,25 +333,25 @@ class BlackJackGame:
         """
         # Obtain index reference for a given player.
         PlayerReference = {}
-        for index, Player in enumerate(Players):
-            PlayerReference[Player.Name] = index
+        for Index, Player in enumerate(Players):
+            PlayerReference[Player.Name] = Index
 
         # Runs through scores and evaluates status.
-        keys = list(Scores.keys())
-        for key in keys:
-            if key != "Dealer":
-                if max(Scores[key]) > max(Scores["Dealer"]):
-                    print("Player: " + key + " wins!")
-                    Players[PlayerReference[key]].Wins += 1
-                elif max(Scores[key]) == max(Scores["Dealer"]):
-                    print("Player: " + key + " ties.")
-                    Players[PlayerReference[key]].Ties += 1
+        Keys = list(Scores.keys())
+        for Key in Keys:
+            if Key != "Dealer":
+                if max(Scores[Key]) > max(Scores["Dealer"]):
+                    print("Player: " + Key + " wins!")
+                    Players[PlayerReference[Key]].Wins += 1
+                elif max(Scores[Key]) == max(Scores["Dealer"]):
+                    print("Player: " + Key + " ties.")
+                    Players[PlayerReference[Key]].Ties += 1
                 else:
-                    print("Player: " + key + " loses.")
-                    Players[PlayerReference[key]].Losses += 1
+                    print("Player: " + Key + " loses.")
+                    Players[PlayerReference[Key]].Losses += 1
         return Players
 
-    def OverallStandings(self, Players: list):
+    def OverallStandings(Players: list):
         """_summary_
         Presentation of the overall player standings.
 
@@ -336,7 +364,6 @@ class BlackJackGame:
             print("Total Wins: " + str(Player.Wins))
             print("Total Ties: " + str(Player.Ties))
             print("Total Losses: " + str(Player.Losses))
-    
 
     def __init__(self):
         """_summary_
@@ -345,11 +372,12 @@ class BlackJackGame:
         Args:
             self (_type_): _description_
         """
-        BlackJackGame.Welcome(self,"1.1")
+        BlackJackGame.Welcome("1.1")
         NumberOfPlayers = BlackJackGame.SelectPlayers(self)
-        Players = BlackJackGame.NamePlayers(self,NumberOfPlayers)
+        Players = BlackJackGame.NamePlayers(NumberOfPlayers)
         NumberOfDecks = BlackJackGame.SelectDeck(self, Players)
         BlackJackGame.StartGame(self, Players, NumberOfDecks)
+
 
 # remember ace high or low
 

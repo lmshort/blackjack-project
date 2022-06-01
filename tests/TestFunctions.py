@@ -4,6 +4,7 @@ import mock
 import builtins
 import pytest
 
+
 class Test:
     def test_IsPositiveInteger(Self):
         """
@@ -14,27 +15,27 @@ class Test:
 
         with pytest.raises(Exception):
             assert Functions.Numeric.IsPositiveInteger("2.5")
-            
+
     def test_GetUserInputPostitiveInteger(Self):
         """
         test the Functions.Logical.GetUserInputPositiveInteger member
         """
-        with mock.patch.object(builtins, 'input', lambda _: '4'):
+        with mock.patch.object(builtins, "input", lambda _: "4"):
             assert Functions.Logical.GetUserInputPostitiveInteger("helloo") == 4
 
-        with mock.patch.object(builtins, 'input', lambda _: 'a'):
+        with mock.patch.object(builtins, "input", lambda _: "a"):
             assert Functions.Logical.GetUserInputPostitiveInteger("helloo") == False
 
-        with mock.patch.object(builtins, 'input', lambda _: '-1'):
+        with mock.patch.object(builtins, "input", lambda _: "-1"):
             assert Functions.Logical.GetUserInputPostitiveInteger("helloo") == False
 
     def test_GetUserInputString(Self):
         """
         test the Functions.Logical.GetUserInputString member
         """
-        with mock.patch.object(builtins, 'input', lambda _: 'ab'):
-            assert Functions.Logical.GetUserInputString("helloo") == 'ab'
-        
+        with mock.patch.object(builtins, "input", lambda _: "ab"):
+            assert Functions.Logical.GetUserInputString("helloo") == "ab"
+
     def test_IsStringLongerThanEqualTo(Self):
         """
         test the Functions.Logical.IsStringLongerThanEqualTo member
@@ -62,25 +63,25 @@ class Test:
         test the Functions.Logical.ShiftPlayerOrder member.
         """
         # Pseudo-randomness test
-        TestData = [0,1,2,3]
-        assert Functions.Logical.ShiftPlayerOrder(TestData) == [3,0,1,2]
+        TestData = [0, 1, 2, 3]
+        assert Functions.Logical.ShiftPlayerOrder(TestData) == [3, 0, 1, 2]
 
     def test_GetStickOrTwistInput(Self):
         """
         test the Functions.Logical.GetStickOrTwistInput member.
         """
-        with mock.patch.object(builtins, 'input', lambda _: 's'):
-            assert Functions.Logical.GetStickOrTwistInput() == 'stick'
+        with mock.patch.object(builtins, "input", lambda _: "s"):
+            assert Functions.Logical.GetStickOrTwistInput() == "stick"
 
-        with mock.patch.object(builtins, 'input', lambda _: 't'):
-            assert Functions.Logical.GetStickOrTwistInput() == 'twist'
+        with mock.patch.object(builtins, "input", lambda _: "t"):
+            assert Functions.Logical.GetStickOrTwistInput() == "twist"
 
     def test_GetPlayerName(Self):
         """
         test the Functions.Logical.GetPlayerName member.
         """
-        with mock.patch.object(builtins, 'input', lambda _: 'Name'):
-            assert Functions.Logical.GetPlayerName(1) == 'Name'
+        with mock.patch.object(builtins, "input", lambda _: "Name"):
+            assert Functions.Logical.GetPlayerName(1) == "Name"
 
 
 """

@@ -1,10 +1,15 @@
+"""
+Objects file - contains BlackJackGame object definitons.
+"""
 from typing import Union
+
 
 class Player:
     """
     Player class - created for each player added to the game, contains overall information and stats.
     """
-    def __init__ (Self, PlayerID: int, PlayerName: str):
+
+    def __init__(Self, PlayerId: int, PlayerName: str):
         """_summary_
         Player class initiated with overall information and stats.
 
@@ -13,9 +18,9 @@ class Player:
             PlayerID (int): Simple integer used to account for differences when PlayerName is duplicately used.
             PlayerName (str): Player name string
         """
-        Self.ID = PlayerID
+        Self.Id = PlayerId
         Self.Name = PlayerName
-        #Self.Money = 100
+        # Self.Money = 100
         Self.Wins = 0
         Self.Losses = 0
         Self.Ties = 0
@@ -26,7 +31,8 @@ class Deck:
     """
     Deck class - a class container where list of Card objects are stored.
     """
-    def __init__ (Self, NumberOfDecks: int):
+
+    def __init__(Self, NumberOfDecks: int):
         """_summary_
         Deck class initiated with no. decks and deck attribute, a list of cards.
 
@@ -48,12 +54,12 @@ class Deck:
         Returns:
             list: list of card objects representing a deck
         """
-        Deck = []
+        DeckList = []
         for _ in range(0, NumberOfDecks):
             for j in range(1, 14):
-                for k in ('Diamond','Heart','Spade','Club'):
-                    Deck.append(Card(j,k))
-        return Deck
+                for k in ("Diamond", "Heart", "Spade", "Club"):
+                    DeckList.append(Card(j, k))
+        return DeckList
 
     def DrawCard(Self) -> Union[object, object]:
         """_summary_
@@ -68,7 +74,7 @@ class Deck:
         """
         DrawnCard = Self.pop(0)
         return Self, DrawnCard
-                    
+
     def CountCardsInDeck(Self) -> int:
         """_summary_
         Count the number of cards in a deck
@@ -86,6 +92,7 @@ class Card:
     """
     Card class - card represents a single game card, with real-life attributes assigned.
     """
+
     def __init__(Self, CardNumber: int, CardSuit: str):
         """_summary_
         Initiator function defines key attributes for a card.
@@ -111,7 +118,7 @@ class Card:
         Returns:
             str: textual description of the card, should it be a "picture" card
         """
-        PictureOptions = {1: 'Ace', 11 : 'Jack', 12 : 'Queen', 13 : 'King'}
+        PictureOptions = {1: "Ace", 11: "Jack", 12: "Queen", 13: "King"}
         if CardNumber in PictureOptions:
             return PictureOptions[CardNumber]
 
@@ -125,9 +132,9 @@ class Card:
         Returns:
             int: ranking, based on suit (1 -> 4)
         """
-        RankOptions = {'Diamond' : 1, 'Heart' : 2, 'Spade' : 3, 'Club' : 4}
+        RankOptions = {"Diamond": 1, "Heart": 2, "Spade": 3, "Club": 4}
         if Suit in RankOptions:
-            return RankOptions[Suit]       
+            return RankOptions[Suit]
 
     def Describe(Self):
         """_summary_
@@ -136,14 +143,14 @@ class Card:
         Args:
             Self (object): card object
         """
-        if Self.Number not in (1,11,12,13):
+        if Self.Number not in (1, 11, 12, 13):
             print(f"{Self.Number} of {Self.Suit}s")
-        elif Self.Number in (1,11,12,13):
+        elif Self.Number in (1, 11, 12, 13):
             print(f"{Self.Picture} of {Self.Suit}s")
 
     def CardValue(CardNumber: int) -> int:
         """_summary_
-        Returns the card value 
+        Returns the card value
 
         Args:
             Self (object): card object
@@ -159,11 +166,11 @@ class Card:
         return CardValue
 
 
-
-class Hand():
+class Hand:
     """
     Hand class represents a player's collection of cards.
     """
+
     def __init__(Self):
         """_summary_
         Initiator function defines the hand attribute "Hand" - a list of cards, based on initial 2 card draw.
@@ -171,9 +178,9 @@ class Hand():
         Args:
             Self (object): Hand object
         """
-        Self.Hand = None# Hand.DealHand(Self,Card1, Card2)
+        Self.Hand = None  # Hand.DealHand(Self,Card1, Card2)
 
-    def DealHand(Self, Card1: object, Card2: object) -> list:
+    def DealHand(Self, DrawnCard1: object, DrawnCard2: object) -> list:
         """_summary_
         Function deals a hand, creating a list of card objects for an initial deal.
 
@@ -185,7 +192,7 @@ class Hand():
         Returns:
             object: Hand Hand attribute, a list of cards.
         """
-        Self.Hand = [Card1,Card2]
+        Self.Hand = [DrawnCard1, DrawnCard2]
         return Self.Hand
 
     def HandTwist(Self, Card: object) -> list:
@@ -217,11 +224,11 @@ class Hand():
         for Card in Self:
             # If not an "ace" card, value is added to each array element.
             if Card.Value != 1:
-                TotalValues = [x+Card.Value for x in TotalValues]
+                TotalValues = [x + Card.Value for x in TotalValues]
             # If an "ace" card, additional combinations possible, each accounted for.
             else:
                 TotalValuesPrevious = TotalValues
-                TotalValues = [x+1 for x in TotalValues]
+                TotalValues = [x + 1 for x in TotalValues]
                 for value in TotalValuesPrevious:
                     TotalValues.append(value + 11)
         return TotalValues
@@ -239,7 +246,7 @@ class Hand():
         else:
             # Just returns the values which satisfy the general condition that > 21 = "Bust"
             TotalValues = [x for x in TotalValues if x < 22]
-            print("Value: " + (''.join(str(TotalValues))))
+            print("Value: " + ("".join(str(TotalValues))))
 
 
 if __name__ == "__main__":

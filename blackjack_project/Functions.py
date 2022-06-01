@@ -1,10 +1,15 @@
+"""
+Functions file - contains some simple, reusable functions.
+"""
 import random
 import time
+
 
 class Numeric:
     """
     Numeric functions supporting calculative operations.
     """
+
     def IsPositiveInteger(value: str) -> bool:
         """_summary_
         Confirms whether a received string value is a positive integer.
@@ -16,18 +21,18 @@ class Numeric:
             bool: boolean state confirming whether string represents a positive integer.
         """
         return value.isdigit()
-    
+
     def CountInNewHand():
         """
         _summary_
         Executes a 5 second countdown - used to transition between interfaces.
         """
-        t = 5
+        TimeValue = 5
         print("\nStarting new hand...")
-        while t >= 1:
+        while TimeValue >= 1:
             time.sleep(1)
-            print(t)
-            t -= 1
+            print(TimeValue)
+            TimeValue -= 1
 
 
 class Logical:
@@ -45,10 +50,10 @@ class Logical:
         Returns:
             int: value returned from user.
         """
-        value = input("\n" + str(Prompt) + " [1-5]:")
-        if Numeric.IsPositiveInteger(value):
-            if int(value) <= 5:
-                return int(value)
+        Value = input("\n" + str(Prompt) + " [1-5]:")
+        if Numeric.IsPositiveInteger(Value):
+            if int(Value) <= 5:
+                return int(Value)
         else:
             return False
 
@@ -87,10 +92,7 @@ class Logical:
         Returns:
             bool: state - true if meets condition
         """
-        if Logical.IsStringLongerThanEqualTo(String,1):
-            return True
-        else:
-            return False
+        return bool(Logical.IsStringLongerThanEqualTo(String, 1))
 
     def Randomise(Deck: list) -> list:
         """_summary_
@@ -101,7 +103,7 @@ class Logical:
         Returns:
             list: shuffled list
         """
-        return random.sample(Deck,len(Deck))
+        return random.sample(Deck, len(Deck))
 
     def ShiftPlayerOrder(List: list) -> list:
         """_summary_
@@ -113,7 +115,7 @@ class Logical:
         Returns:
             list: list of players
         """
-        return List[-1:] + List[:-1] 
+        return List[-1:] + List[:-1]
 
     def GetStickOrTwistInput() -> str:
         """_summary_
@@ -122,20 +124,21 @@ class Logical:
         Returns:
             str: string decision (either stick or twist)
         """
-        result = None
-        while result == None:
-            value = input(f"Stick (enter 's') or Twist (enter 't') ?:")
+        Result = None
+        while Result == None:
+            Value = input("Stick (enter 's') or Twist (enter 't') ?:")
             try:
-                if len(value) == 1 and value.lower() in ('s'):
-                    result = "stick"
-                    return result
-                elif len(value) != 0 and value.lower() in ('t'):
-                    result = "twist"
-                    return result
-                else: raise
+                if len(Value) == 1 and Value.lower() in ("s"):
+                    Result = "stick"
+                    return Result
+                if len(Value) != 0 and Value.lower() in ("t"):
+                    Result = "twist"
+                    return Result
+                else:
+                    raise None
             except:
                 print("Error - Please ensure correct text syntax used.")
-                
+
     def GetPlayerName(PlayerID: int) -> str:
         """_Summary_
         Prompts the user to enter a player name string.
@@ -144,7 +147,9 @@ class Logical:
             str: playername
         """
         while True:
-            PlayerName = Logical.GetUserInputString("Enter player " + str(PlayerID) + " name")
+            PlayerName = Logical.GetUserInputString(
+                "Enter player " + str(PlayerID) + " name"
+            )
             if Logical.ValidateName(PlayerName):
                 return str(PlayerName)
             print("Error - Incorrect name format (remember: must be > 1 character)")
