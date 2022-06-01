@@ -1,5 +1,5 @@
 """
-Objects file - contains BlackJackGame object definitons.
+Objects file - contains BlackjackGame object definitons.
 """
 from typing import Union
 

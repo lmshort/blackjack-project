@@ -13,8 +13,9 @@ To DO:
 - considerations for error handling - where necessary
 """
 
+GAME_TIME = 2
 
-class BlackJackGame:
+class BlackjackGame:
     """
     Main wrapper class containing game interface functionality.
     """
@@ -33,14 +34,6 @@ class BlackJackGame:
             + str(version)
             + "\n"
         )
-
-    def game_time() -> int:
-        """Constant value game time, used throughout.
-
-        Returns:
-            float: No. seconds
-        """
-        return 2
 
     """
     Game welcome interface functions:
@@ -79,7 +72,7 @@ class BlackJackGame:
             print(
                 "Error - Please select number of desks (remember: positive integer values only)"
             )
-            BlackJackGame.select_deck(self, players)
+            BlackjackGame.select_deck(self, players)
         # insert update of player object
         print(
             str(number_of_decks)
@@ -128,30 +121,30 @@ class BlackJackGame:
 
         while True:
             # Executes interface for players' turns.
-            deck, round_num, Scores = BlackJackGame.players_turn(
+            deck, round_num, Scores = BlackjackGame.players_turn(
                 self, deck, round_num, players, scores
             )
-            time.sleep(0.75 * BlackJackGame.game_time())
+            time.sleep(0.75 * GAME_TIME)
             # Executes Dealer's turn
-            deck, dcores = BlackJackGame.dealers_turn(self, deck, scores)
-            time.sleep(0.75 * BlackJackGame.game_time())
+            deck, dcores = BlackjackGame.dealers_turn(self, deck, scores)
+            time.sleep(0.75 * GAME_TIME)
             print(
                 "Deck has "
                 + str(objects.Deck.count_cards_in_deck(deck))
                 + " cards left."
             )
-            time.sleep(0.75 * BlackJackGame.game_time())
+            time.sleep(0.75 * GAME_TIME)
             # Evaulaute the winners/losers
-            players = BlackJackGame.assess_results(players, scores)
-            time.sleep(1.5 * BlackJackGame.game_time())
+            players = BlackjackGame.assess_results(players, scores)
+            time.sleep(1.5 * GAME_TIME)
             os.system("clear")
             # Presentation of overall results
-            BlackJackGame.overall_standings(players)
-            time.sleep(1.5 * BlackJackGame.game_time())
+            BlackjackGame.overall_standings(players)
+            time.sleep(1.5 * GAME_TIME)
             # Hard reshuffle when less than 25 cards.
             if (objects.Deck.count_cards_in_deck(deck)) <= 25:
                 print("Re-shuffling Deck...")
-                time.sleep(0.8 * BlackJackGame.game_time())
+                time.sleep(0.8 * GAME_TIME)
                 deck = functions.Logical.randomise((objects.Deck(number_of_decks).deck))
             # at end of Round - player order is shifted
             players = functions.Logical.shift_player_order(players)
@@ -181,13 +174,13 @@ class BlackJackGame:
         for player in players:
 
             print(f"\nPlayer: {player.name}'s Hand:\n")
-            deck, player = BlackJackGame.build_hand(self, deck, player)
+            deck, player = BlackjackGame.build_hand(self, deck, player)
             for card in player.hand:
                 objects.Card.describe(card)
             objects.Hand.print_hand_value(player.hand)
 
             # Execution of function to interface user stick/twist options
-            deck, scores = BlackJackGame.user_options(deck, player, scores)
+            deck, scores = BlackjackGame.user_options(deck, player, scores)
 
         return deck, round_num, scores
 
@@ -224,7 +217,7 @@ class BlackJackGame:
         while True:
             # get user option
             option = functions.Logical.get_stick_or_twist_input()
-            time.sleep(0.4 * BlackJackGame.game_time())
+            time.sleep(0.4 * GAME_TIME)
             if option == "twist":
                 # draw card
                 deck, card = objects.Deck.draw_card(deck)
@@ -259,16 +252,16 @@ class BlackJackGame:
         dealer = objects.Player(0, "Dealer")
 
         # Dealer's hand:
-        deck, dealer = BlackJackGame.build_hand(self, deck, dealer)
+        deck, dealer = BlackjackGame.build_hand(self, deck, dealer)
         print(f"\nDealer's Hand:\n")
         for card in dealer.hand:
             objects.Card.describe(card)
         objects.Hand.print_hand_value(dealer.hand)
 
-        time.sleep(0.4 * BlackJackGame.game_time())
+        time.sleep(0.4 * GAME_TIME)
 
         # Executes logic behind dealer's turn
-        deck, scores = BlackJackGame.dealer_options(self, dealer, deck, scores)
+        deck, scores = BlackjackGame.dealer_options(self, dealer, deck, scores)
         return deck, scores
 
     def dealer_options(
@@ -300,7 +293,7 @@ class BlackJackGame:
             # if the above conditions are not met, dealer will always draw a card
             deck, card = objects.Deck.draw_card(deck)
             objects.Card.describe(card)
-            time.sleep(0.4 * BlackJackGame.game_time())
+            time.sleep(0.4 * GAME_TIME)
 
             # hand adjusted
             dealer.hand = objects.Hand.hand_twist(dealer.hand, card)
@@ -361,15 +354,15 @@ class BlackJackGame:
         Args:
             self (_type_): _description
         """
-        BlackJackGame.welcome("1.1")
-        number_of_players = BlackJackGame.select_players(self)
-        players = BlackJackGame.name_players(number_of_players)
-        number_of_decks = BlackJackGame.select_deck(self, players)
-        BlackJackGame.start_game(self, players, number_of_decks)
+        BlackjackGame.welcome("1.1")
+        number_of_players = BlackjackGame.select_players(self)
+        players = BlackjackGame.name_players(number_of_players)
+        number_of_decks = BlackjackGame.select_deck(self, players)
+        BlackjackGame.start_game(self, players, number_of_decks)
 
 
 # remember ace high or low
 
 
 if __name__ == "__main__":
-    BlackJackGame()
+    BlackjackGame()

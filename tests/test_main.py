@@ -16,14 +16,14 @@ class Test:
         Test the select players option returns the corresponding integer.
         """
         with mock.patch.object(builtins, "input", lambda _: "2"):
-            assert main.BlackJackGame.select_players(self) == 2
+            assert main.BlackjackGame.select_players(self) == 2
 
     def test_select_deck(self):
         """
         Test the select players option returns the corresponding integer.
         """
         with mock.patch.object(builtins, "input", lambda _: "2"):
-            assert main.BlackJackGame.select_deck(self, []) == 2
+            assert main.BlackjackGame.select_deck(self, []) == 2
 
     def test_name_players(self):
         """
@@ -31,7 +31,7 @@ class Test:
         """
         inputs = ["testname1", "testname2"]
         with mock.patch.object(builtins, "input", side_effect=inputs):
-            players = main.BlackJackGame.name_players(2)
+            players = main.BlackjackGame.name_players(2)
             assert players[0].name == "testname1"
             assert players[1].name == "testname2"
 
@@ -59,7 +59,7 @@ class Test:
         # Mocks user inputs and also sets time.sleep to 0 to speed up test.
         with mock.patch.object(builtins, "input", side_effect=inputs):
             with mock.patch("time.sleep"):
-                deck, round_num, scores = main.BlackJackGame.players_turn(
+                deck, round_num, scores = main.BlackjackGame.players_turn(
                     self,
                     deck.deck,
                     round_num,
@@ -95,7 +95,7 @@ class Test:
         """
         deck, _, _, scores = simulated_setup_deck
         with mock.patch("time.sleep"):
-            deck, scores = main.BlackJackGame.dealers_turn(self, deck.deck, scores)
+            deck, scores = main.BlackjackGame.dealers_turn(self, deck.deck, scores)
 
         assert len(deck) == 42
         assert scores["Dealer"][0] == 18
@@ -114,7 +114,7 @@ class Test:
 
         players = [TestPlayer("testname1"), TestPlayer("testname2")]
         scores = {"testname1": [11, 21], "testname2": [18], "Dealer": [19]}
-        scores = main.BlackJackGame.assess_results(players, scores)
+        scores = main.BlackjackGame.assess_results(players, scores)
         out, err = capfd.readouterr()
         assert out == "Player: testname1 wins!\nPlayer: testname2 loses.\n"
 
