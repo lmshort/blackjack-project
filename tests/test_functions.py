@@ -6,7 +6,7 @@ import pytest
 
 
 class Test:
-    def test_Iis_positive_integer(Self):
+    def test_is_positive_integer(Self):
         """
         test the functions.Numeric.is_positive_integer member
         """
