@@ -6,29 +6,30 @@ import pytest
 
 
 class Test:
-
-    def test_is_positive_integer(Self):
+    def test_is_positive_integer_negative_value(Self):
         """
-        test the functions.Numeric.is_positive_integer member
+        test the functions.Numeric.is_positive_integer member with a negative integer
         """
         with pytest.raises(Exception):
             assert functions.Numeric.is_positive_integer("-1")
 
+    def test_is_positive_integer_decimal(Self):
+        """
+        test the functions.Numeric.is_positive_integer member with a non-integer
+        """
         with pytest.raises(Exception):
             assert functions.Numeric.is_positive_integer("2.5")
 
     def test_get_user_input_positive_integer(Self):
         """
-        test the functions.Logical.get_user_input_positive_integer member
+        test the functions.Logical.get_user_input_positive_integer member with correct and incorrect values
         """
-        with mock.patch.object(builtins, "input", lambda _: "4"):
-            assert functions.Logical.get_user_input_positive_integer("helloo") == 4
-
-        with mock.patch.object(builtins, "input", lambda _: "a"):
-            assert functions.Logical.get_user_input_positive_integer("helloo") == False
-
-        with mock.patch.object(builtins, "input", lambda _: "-1"):
-            assert functions.Logical.get_user_input_positive_integer("helloo") == False
+        inputs = ["4", "a"]
+        with mock.patch.object(builtins, "input", side_effect=inputs):
+            assert (
+                functions.Logical.get_user_input_positive_integer("helloo"),
+                functions.Logical.get_user_input_positive_integer("helloo"),
+            ) == (4, False)
 
     def test_get_user_input_string(Self):
         """
@@ -41,9 +42,11 @@ class Test:
         """
         test the functions.Logical.is_string_longer_than_equal_to member
         """
-        assert functions.Logical.is_string_longer_than_equal_to("string", 1) == True
-        assert functions.Logical.is_string_longer_than_equal_to("string", 6) == True
-        assert functions.Logical.is_string_longer_than_equal_to("string", 10) == False
+        assert (
+            functions.Logical.is_string_longer_than_equal_to("string", 1),
+            functions.Logical.is_string_longer_than_equal_to("string", 6),
+            functions.Logical.is_string_longer_than_equal_to("string", 10),
+        ) == (True, True, False)
 
     def test_validate_name(Self):
         """
@@ -67,13 +70,17 @@ class Test:
         test_data = [0, 1, 2, 3]
         assert functions.Logical.shift_player_order(test_data) == [3, 0, 1, 2]
 
-    def test_get_stick_or_twist_input(Self):
+    def test_get_stick_or_twist_input_stick(Self):
         """
-        test the functions.Logical.get_stick_or_twist_input member.
+        test the functions.Logical.get_stick_or_twist_input member with a stick input.
         """
         with mock.patch.object(builtins, "input", lambda _: "s"):
             assert functions.Logical.get_stick_or_twist_input() == "stick"
 
+    def test_get_stick_or_twist_input_twist(Self):
+        """
+        test the functions.Logical.get_stick_or_twist_input member with a twist input.
+        """
         with mock.patch.object(builtins, "input", lambda _: "t"):
             assert functions.Logical.get_stick_or_twist_input() == "twist"
 

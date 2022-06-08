@@ -32,14 +32,11 @@ class Test:
         inputs = ["testname1", "testname2"]
         with mock.patch.object(builtins, "input", side_effect=inputs):
             players = main.BlackjackGame.name_players(2)
-            assert players[0].name == "testname1"
-            assert players[1].name == "testname2"
+            assert (players[0].name, players[1].name) == ("testname1", "testname2")
 
     """
     StartGame
     """
-    # not sure how to test this piece - large function, dependent on many others
-    # potentially use fixtures to pre-define the state for each test.
 
     @pytest.fixture
     def simulated_setup_deck(self) -> Union[object, int, list, dict]:
@@ -67,27 +64,29 @@ class Test:
                     scores,
                 )
 
-        assert round_num == 1
-        assert scores["testplayer1"] == [
-            8,
-            18,
-            18,
-            28,
-            18,
-            28,
-            28,
-            38,
-            18,
-            28,
-            28,
-            38,
-            28,
-            38,
-            38,
-            48,
-        ]
-        assert scores["testplayer2"] == [7]
-        assert len(deck) == 43
+        assert (round_num, scores["testplayer1"], scores["testplayer2"], len(deck)) == (
+            1,
+            [
+                8,
+                18,
+                18,
+                28,
+                18,
+                28,
+                28,
+                38,
+                18,
+                28,
+                28,
+                38,
+                28,
+                38,
+                38,
+                48,
+            ],
+            [7],
+            43,
+        )
 
     def test_dealers_turn(self, simulated_setup_deck):
         """
@@ -97,8 +96,7 @@ class Test:
         with mock.patch("time.sleep"):
             deck, scores = main.BlackjackGame.dealers_turn(self, deck.deck, scores)
 
-        assert len(deck) == 42
-        assert scores["Dealer"][0] == 18
+        assert (len(deck), scores["Dealer"][0]) == (42, 18)
 
     def test_assess_results(self, capfd):
         """
