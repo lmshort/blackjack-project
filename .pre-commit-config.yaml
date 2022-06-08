@@ -16,7 +16,8 @@ repos:
   hooks:
     - id: pytest-check
       name: pytest-check
-      entry: pytest
+      entry: bash ./tests/run_tests.sh
       language: system
+      pass_filenames: false
       always_run: true
-      stages: [push]
+      stages: [commit]
