@@ -18,6 +18,5 @@ repos:
       name: pytest-check
       entry: pytest
       language: system
-      pass_filenames: false
       always_run: true
-      stages: [commit]
+      stages: [push]
