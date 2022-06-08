@@ -114,7 +114,7 @@ class Logical:
             str: string decision (either stick or twist)
         """
         result = None
-        while result == None:
+        while result is None:
             value = input("Stick (enter 's') or Twist (enter 't') ?:")
             try:
                 if len(value) == 1 and value.lower() in ("s"):
@@ -123,8 +123,7 @@ class Logical:
                 if len(value) != 0 and value.lower() in ("t"):
                     result = "twist"
                     return result
-                else:
-                    raise None
+                raise None
             except:
                 print("Error - Please ensure correct text syntax used.")
 

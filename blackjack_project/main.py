@@ -7,13 +7,8 @@ from typing import Union
 from blackjack_project import functions
 from blackjack_project import objects
 
-"""
-To DO:
-- adjust object argument def
-- considerations for error handling - where necessary
-"""
-
 GAME_TIME = 2
+
 
 class BlackjackGame:
     """
@@ -34,10 +29,6 @@ class BlackjackGame:
             + str(version)
             + "\n"
         )
-
-    """
-    Game welcome interface functions:
-    """
 
     def select_players(self) -> int:
         """Select, via user input the number of players required (maximum 5).
@@ -98,10 +89,6 @@ class BlackjackGame:
             players.append(player)
         return players
 
-    """
-    Game operation interface functions
-    """
-
     def start_game(self, players: list, number_of_decks: int):
         """Main game interface wrapper. This function contains executes gameplay indefinitely.
 
@@ -114,19 +101,19 @@ class BlackjackGame:
 
         # Deck generation
         deck = functions.Logical.randomise((objects.Deck(number_of_decks).deck))
-
+        print(len(deck))
         # Round iterator and score dict initialised
         round_num = 0
         scores = {}
 
         while True:
             # Executes interface for players' turns.
-            deck, round_num, Scores = BlackjackGame.players_turn(
+            deck, round_num, scores = BlackjackGame.players_turn(
                 self, deck, round_num, players, scores
             )
             time.sleep(0.75 * GAME_TIME)
             # Executes Dealer's turn
-            deck, dcores = BlackjackGame.dealers_turn(self, deck, scores)
+            deck, scores = BlackjackGame.dealers_turn(self, deck, scores)
             time.sleep(0.75 * GAME_TIME)
             print(
                 "Deck has "
@@ -210,7 +197,7 @@ class BlackjackGame:
             scores (dict): Game scores dictionary
 
         Returns:
-            deck (object): Deck of playing cards
+            deckreurned (object): Deck of playing cards
             scores (dict): Game scores dictionary
         """
         # migrate this all over to a separate function
@@ -253,7 +240,7 @@ class BlackjackGame:
 
         # Dealer's hand:
         deck, dealer = BlackjackGame.build_hand(self, deck, dealer)
-        print(f"\nDealer's Hand:\n")
+        print("\nDealer's Hand:\n")
         for card in dealer.hand:
             objects.Card.describe(card)
         objects.Hand.print_hand_value(dealer.hand)
@@ -283,10 +270,10 @@ class BlackjackGame:
             dealer_hand_max_value = max(objects.Hand.hand_value(dealer.hand))
             dealer_hand_min_value = min(objects.Hand.hand_value(dealer.hand))
             # if the hand value is within 16-22, then register score and exist operation
-            if dealer_hand_max_value <= 21 and dealer_hand_max_value > 16:
+            if 16 < dealer_hand_max_value <= 21:
                 scores["Dealer"] = objects.Hand.hand_value(dealer.hand)
                 break
-            elif dealer_hand_min_value <= 21 and dealer_hand_min_value > 16:
+            elif 16 < dealer_hand_min_value <= 21:
                 scores["Dealer"] = objects.Hand.hand_value(dealer.hand)
                 break
 
