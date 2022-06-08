@@ -17,7 +17,7 @@ class Player:
             player_id (int): Simple integer used to account for differences when PlayerName is duplicately used.
             player_name (str): Player name string
         """
-        self.id = player_id
+        self.idendity = player_id
         self.name = player_name
         # self.Money = 100
         self.wins = 0
@@ -51,12 +51,12 @@ class Deck:
         Returns:
             list: list of card objects representing a deck
         """
-        deckList = []
+        deck_list = []
         for _ in range(0, number_of_decks):
             for j in range(1, 14):
                 for k in ("Diamond", "Heart", "Spade", "Club"):
-                    deckList.append(Card(j, k))
-        return deckList
+                    deck_list.append(Card(j, k))
+        return deck_list
 
     def draw_card(self) -> Union[object, object]:
         """Draws a card from a deck.
